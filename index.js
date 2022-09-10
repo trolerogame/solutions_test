@@ -169,19 +169,13 @@ en caso de que el owner no exista tirar el error 'user not found'
 const walkingThePet = async (ownerId) => {
   try{
     let users = await(await fetch('https://apimocha.com/lightcode-test/owners')).json()
-    let listUsers = users.map(user => user.id)
-    if(!listUsers.includes(ownerId)) throw new Error('user not found')
-    let ownerName = ''
-    for(let owner of users)
-      if(owner.id == ownerId) {
-        ownerName = owner.name
-        break
-      }
+    let owner = users.find(user => user.id === ownerId)
+    if(!owner) throw new Error('user not found')
     const resPets = await fetch('https://apimocha.com/lightcode-test/pets')
     let pets =  await resPets.json()
     pets = pets.filter(pet => pet.ownerId == ownerId)
     if(pets.length == 0) return 'pasea solo'
-    return  `${ownerName} saca a pasear a ${pets[rnd(pets.length)].name}`
+    return  `${owner.name} saca a pasear a ${pets[rnd(pets.length)].name}`
   }catch(e){
     return e.message
   }
